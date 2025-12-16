@@ -8,6 +8,14 @@ import { defineConfig, devices } from '@playwright/test';
 // import path from 'path';
 // dotenv.config({ path: path.resolve(__dirname, '.env') });
 
+function getBaseUrl() {
+  const environment = process.env.ENV;
+  if (environment == 'prod') return 'https://automationintesting.online/';
+  else if (environment == 'docker') return 'http://localhost';
+  else if (environment == 'kube') return 'http://kube.local';
+  else return 'https://automationintesting.online/';
+}
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -26,8 +34,10 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    baseURL: 'http://localhost',
-
+    baseURL: getBaseUrl(),
+    screenshot: 'only-on-failure',
+    ignoreHTTPSErrors: true,
+    headless: true,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
